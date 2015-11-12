@@ -30,7 +30,7 @@
 \sloppy
 
 %% code listings
-\lstset{ 
+\lstset{
   language=fortran,                % the language of the code
   basicstyle=\ttfamily\scriptsize,       % the size of the fonts that are used for the code
   commentstyle=\color{Grey}\textit,
@@ -61,7 +61,7 @@
 }
 
 \pagebreak
-\setlength{\parindent}{0pt} 
+\setlength{\parindent}{0pt}
 \setlength{\parskip}{2ex}
 
 \section{Residual error models}
@@ -113,15 +113,15 @@ W = SQRT(THETA(1)**2+THETA(2)**2*IPRED*IPRED) * EXP(IOV)
 Y = IPRED + W*EPS(1)
 \end{lstlisting}
 
-\noindent \emph{Key publications:} 
+\noindent \emph{Key publications:}
 \begin{itemize}
 \item Karlsson et al, 1998, J Pharmacokinet Biopharmaceut
-\item Silber et al, 2009, J Pharmacokinet Pharmacodyn 
+\item Silber et al, 2009, J Pharmacokinet Pharmacodyn
 \item Plan et al, PAGE 2011, Abstr. 1983
 \end{itemize}
 
 \subsection{Joint residual error between multiple observations}
-Several situations could occur in which residual errors are correlated between measurements: for example for replicate samples at the same timepoint (from a repeated bio-analysis of the same sample), or from parent and metabolite measurements at the same timepoint. The residual error for these measurements can be expected to be correlated. In this situation, the difference between the repeated samples is expected to be smaller than between samples at different time points. To account for this correlation between repeated samples, the following structure for the residual error can be used: 
+Several situations could occur in which residual errors are correlated between measurements: for example for replicate samples at the same timepoint (from a repeated bio-analysis of the same sample), or from parent and metabolite measurements at the same timepoint. The residual error for these measurements can be expected to be correlated. In this situation, the difference between the repeated samples is expected to be smaller than between samples at different time points. To account for this correlation between repeated samples, the following structure for the residual error can be used:
 
 \begin{equation}
 y_{ijk} = \hat{y}_{ijk} + \epsilon_{ij} + \epsilon_{ijk}
@@ -141,14 +141,14 @@ which have the same realization of the residual errors (level-two
 random effects, epsilons). The group of such observations is called a
 level-two (L2) record. In NONMEM, data records of an L2 record must be
 contiguous (and contained within the
-same individual record). 
+same individual record).
 
 \noindent \emph{Relevant NONMEM code (parent - metabolite):}
 \begin{lstlisting}
 $ERROR
 IF (TYPE.EQ.1) THEN
   Y = IPRED + EPS(1)  ; Observation type 1
-ELSE 
+ELSE
   Y = IPRED + EPS(2)  ; Observation type 2
 ENDIF
 
@@ -177,7 +177,7 @@ IF (TYPE.EQ.2) FLG = 1  ; Replicate 2
 Y = IPRED + EPS(1) + (1-FLG)*EPS(2) + FLG * EPS(3)
 
 $SIGMA 0.1   ; "Shared" error
-$SIGMA BLOCK (1) 0.05  
+$SIGMA BLOCK (1) 0.05
 $SIGMA BLOCK (1) SAME
 
 \end{lstlisting}
@@ -258,7 +258,7 @@ $SIGMA .1
 \begin{itemize}
 \item Karlsson et al, 1995, J Pharmacokinet Biopharmaceut
 \end{itemize}
-	
+
 \subsection{Residual error magnitude varying with covariates and time}
 
 Sources of variability such as erroneous dosing and sampling history
@@ -283,7 +283,7 @@ $ERROR
 PROP = THETA(1)
 ADD  = THETA(2)
 FACT = THETA(3)
-KA   = THETA(4) 
+KA   = THETA(4)
 MAT  = 1 / KA  ; Mean aborption time
 IF(TIME.GT.MAT) FACT = 1
 W = SQRT(ADD**2+PROP**2*IPRED*IPRED)*FACT
@@ -333,7 +333,7 @@ implemented:
 \begin{equation}
 \ln(y_{obs,i}) = \ln(\hat{y}_i) + \epsilon \left[1+\left(\theta_2
     \left| \frac{\partial \hat{y}_i}{\partial t} \right|^+ + \theta_3
-    \left| \frac{\partial \hat{y}_i}{\partial t} \right|^- \right)^2 \right] 
+    \left| \frac{\partial \hat{y}_i}{\partial t} \right|^- \right)^2 \right]
 \end{equation}
 
 \begin{equation}
@@ -371,18 +371,18 @@ on the residual, as well as the magnitude (variance) of the residual
 error of the outliers and the non-outliers is defined:
 
 \begin{equation}
-L_1 = \frac{1}{\sqrt{2 \pi {\sigma^2_{normal}}}} e^{{\left( - \frac{y_{ij} - \hat{y}_{ij}}{\sigma_{normal}} \right)}^2}
+L_1 = \frac{1}{\sqrt{2 \pi {\sigma^2_{normal}}}} e^{-{\left(\frac{y_{ij} - \hat{y}_{ij}}{\sigma_{normal}} \right)}^2}
 \end{equation}
 
 \begin{equation}
-L_2 = \frac{1}{\sqrt{2 \pi {\sigma^2_{high}}}} e^{{\left( - \frac{y_{ij} - \hat{y}_{ij}}{\sigma_{high}} \right)}^2} 
+L_2 = \frac{1}{\sqrt{2 \pi {\sigma^2_{high}}}} e^{-{\left(\frac{y_{ij} - \hat{y}_{ij}}{\sigma_{high}} \right)}^2}
 \end{equation}
 
 \begin{equation}
 L = (1-MP) \cdot L_1 + MP \cdot L_2
 \end{equation}
 
-where $y_{ij}$ is the observed value, $y_{ij}$ is the subject specific prediction, $L$ is the joint
+where $y_{ij}$ is the observed value, $\hat{y}_{ij}$ is the subject specific prediction, $L$ is the joint
 likelihood of all observations, and $MP$ is the fraction of outliers. $L_1$ and $L_2$ are the
 likelihoods for the observations with normal or high residual error, respectively.
 
@@ -411,7 +411,7 @@ $THETA (0,1)    ;4 SIG2
 
 $OMEGA 0.1
 
-$EST MAXEVAL=9990 -2LL METH=1 LAPLACE 
+$EST MAXEVAL=9990 -2LL METH=1 LAPLACE
 \end{lstlisting}
 
 Key publications:
@@ -426,7 +426,7 @@ mixed-effects analysis. Priors can be implemented on both fixed
 effects and random effects, although NONMEM does not allow direct
 implementation of priors on \$SIGMA. To implement a prior on residual
 error magnitude, the standard deviation of $\Sigma$ must be estimated
-as a fixed-effect, e.g.: 
+as a fixed-effect, e.g.:
 
 \begin{lstlisting}
 $ERROR
@@ -462,19 +462,19 @@ been applied in pharmacometrics.
 \noindent E.g. consider the general non-linear model:
 
 \begin{equation}
-y_i = g(x_i^\ast, \beta_i) + \epsilon_i 
+y_i = g(x_i^\ast, \beta_i) + \epsilon_i
 \end{equation}
 
 \noindent where $x_i^\ast$ denotes the true but unobserved value of
-the regressor. In errors-in-variables models we define this value to be associated with an error: 
+the regressor. In errors-in-variables models we define this value to be associated with an error:
 
 \begin{equation}
-x_t = x_t^\ast + \eta_t 
+x_t = x_t^\ast + \eta_t
 \end{equation}
 
 If possible, it would be nice if flexible errors-in-variables could be
 described by the language, although is currently not handled in NONMEM
-nor Monolix. 
+nor Monolix.
 
 \vspace{10pt}
 \noindent \emph{Key publications:}
@@ -489,12 +489,12 @@ transformed using the same transformation. In general terms this
 transformation is described using:
 
 \begin{equation}
-h(y_{ij}) = h \{ f(x_{ij}, \beta_i) \} + \epsilon_{ij} 
+h(y_{ij}) = h \{ f(x_{ij}, \beta_i) \} + \epsilon_{ij}
 \end{equation}
 
 \noindent where $h$ is a monotone transformation, such as
 log-transform (LTBS), or Box-Cox transform. The Box-Cox transform is a
-power transform that uses the power parameter $\lambda$: 
+power transform that uses the power parameter $\lambda$:
 
 \begin{equation}
 y_i^{(\lambda)} =
@@ -504,7 +504,7 @@ y_i^{(\lambda)} =
 \end{cases}
 \end{equation}
 
-\noindent Log-transform is a special case of the Box-Cox transform, where $\lambda = 0$. 
+\noindent Log-transform is a special case of the Box-Cox transform, where $\lambda = 0$.
 
 \noindent \emph{Relevant NONMEM code:}
 \begin{lstlisting}
@@ -512,8 +512,8 @@ y_i^{(\lambda)} =
 $ERROR
   LAMB = 0.5
   IPRED = (F**LAMB - 1) / LAMB
-  Y = IPRED + EPS(1) 
-  
+  Y = IPRED + EPS(1)
+
 ; NB: DV in dataset requires the same transformation (i.e. with lamb = 0.5)
 \end{lstlisting}
 
@@ -533,7 +533,7 @@ $SUB CONTR=CONTR.TXT CCONTR=CCONTR.TXT
 $PRED
      W=THETA(2)                 ;SD
      CL=THETA(1)*EXP(ETA(1))    ;CL/F
-     PRE=1/CL                   ;@ SS ASSUMING INPUT RATE = 1 
+     PRE=1/CL                   ;@ SS ASSUMING INPUT RATE = 1
      LAM=THETA(3)
      Y=(PRE**LAM-1)/LAM+EPS(1)*W
      RES1=(DV-PRE)/W
@@ -566,13 +566,13 @@ File ccontr.txt (NM6):
       data one,two/1.,2./
       if (icall.le.1) return
       w=y
-     
+
          y=(y**theta(3)-one)/theta(3)
 
       call cels (c1,c2,c3,ier1,ier2)
       y=w
       c1=c1-two*(theta(3)-one)*log(y)
-      
+
       return
       end
 \end{lstlisting}
@@ -587,15 +587,15 @@ File ccontr.txt (NM7 or higher):
       data one,two/1.,2./
       if (icall.le.1) return
       w=y(1)
-      
+
          y(1)=(y(1)**theta(3)-one)/theta(3)
-         
-      
-      
+
+
+
       call cels (c1,c2,c3,ier1,ier2)
       y(1)=w
       c1=c1-two*(theta(3)-one)*log(y(1))
-      
+
       return
       end
 \end{lstlisting}
@@ -625,14 +625,14 @@ calculate the individual probability of belonging to the subpopulation
 information about each individual than the discrete
 $MIXEST_k$. Individual parameter estimates based on $IP_k$ should be
 preferable whenever individual parameter estimates are to be used as
-study output or for simulations. 
+study output or for simulations.
 
 \begin{equation}
 OFV = \displaystyle\sum\limits_{i=1}^n OFV_i = \displaystyle\sum\limits_{i=1}^n -2 \ln(IL_i)
 \end{equation}
 
 \begin{equation}
-IL_i = \displaystyle\sum\limits_{k=1}^m IL_{i,k} \cdot P_{pop,k} = \displaystyle\sum\limits_{k=1}^m \exp(-OFV_{i,k} / 2) \cdot P_{pop,k} 
+IL_i = \displaystyle\sum\limits_{k=1}^m IL_{i,k} \cdot P_{pop,k} = \displaystyle\sum\limits_{k=1}^m \exp(-OFV_{i,k} / 2) \cdot P_{pop,k}
 \end{equation}
 
 \begin{equation}
@@ -648,7 +648,7 @@ individuals. This functionality is implemented in PsN (pind).
 
 \noindent \emph{Relevant NONMEM code:}
 \begin{lstlisting}
-$MIX 
+$MIX
 NSPOP=2
 P(1) = THETA(3)
 P(2) = 1-THETA(3)
@@ -784,7 +784,7 @@ around the empirical Bayes estimates using ($\hat{\eta_{ki}}$) using:
     & \sum_{l=1}^{t} \epsilon^*_{ijl} \left( \frac{\partial h_{ij}}{\partial \epsilon_{ijl}} |_{Q_0} +  \sum_{k=1}^{m} \frac{\partial}{\partial \eta_{ki}}
     \left( \frac{\partial h}{\partial \epsilon_{ijl}} |_{\vec{\epsilon}=\vec{0}} \right) |_{Q_{0}} ( \eta^*_{ki} - \hat{\eta_{ki}} ) + \sum_{k=1}^{n} \frac{\partial}{\partial g_{ki}} \left( \frac{\partial h}{\partial \epsilon_{ijl}} |_{\vec{\epsilon} = \vec{0}} \right) |_{Q_0} (g^*_{ki}-\hat{g}_{ki})  \right)
 \end{split}
-\end{displaymath} 
+\end{displaymath}
 
 \noindent where $Q_0 = \{\vec{\epsilon_{ij}} = \vec{0}, \vec{\eta} =
 \hat{\vec{\eta}}, g_{ki} = \hat{g}_{ki} \} $, $m$ and $n$ are the
@@ -806,7 +806,7 @@ from NONMEM.
 \begin{lstlisting}
 $PK
 ...
-$TABLE ID DV MDV IPRED=OPRED W G011 G021 G031 G041 G051 G061 G071 G081 
+$TABLE ID DV MDV IPRED=OPRED W G011 G021 G031 G041 G051 G061 G071 G081
 \end{lstlisting}
 
 \noindent \emph{Relevant NONMEM code: (linearized model)}
@@ -886,11 +886,11 @@ to be the same within each individual.
 \begin{lstlisting}
 $PRED
 -----Baseline model-----------
-IF(TIME.EQ.0)THEN  
+IF(TIME.EQ.0)THEN
   OBASE = EXP(ODV)                  ; observed baseline response at
 ENDIF                               ; time 0
 
-IBASE  = OBASE*EXP(ETA(1)*THETA(1)) 
+IBASE  = OBASE*EXP(ETA(1)*THETA(1))
 
 ...
 Y = IPRED + EPS(1) * THETA(1)
@@ -898,7 +898,7 @@ Y = IPRED + EPS(1) * THETA(1)
 $THETA
 (0, 0.3)  ; 1 RV magnitude (sd)
 $OMEGA
-1 FIX 
+1 FIX
 $SIGMA
 1 FIX
 \end{lstlisting}
@@ -916,12 +916,12 @@ effects and random effects. In NONMEM this can be done by using the
 NWPRI and TNPRI functions in the \$PRIOR subroutine. NWPRI computes a
 function based on a frequency prior that has a multivariate normal
 form for THETA, and an inverse Wishart form for OMEGA (independent
-from the normal for THETA). 
+from the normal for THETA).
 
 TNPRI computes a penalty function based on a frequency prior that has
 a multivariate normal form for all unconstrained parameters.  When
 used during a Simulation Step, it produces a random value of the
-vector of all model parameters (whose values are not fixed).  
+vector of all model parameters (whose values are not fixed).
 
 \vspace{10pt}
 
@@ -983,7 +983,7 @@ PAR1 = THETA(1) * EXP(ETA(1))
 FACT = THETA(3)
 PAR2 = THETA(2) * EXP(FACT*ETA(1))
 \end{lstlisting}
- 
+
 \section{Additional levels of random effects}
 Additional levels of random effects may be needed to provide a better
 description of the data. It would be preferable to have a general
@@ -1011,7 +1011,7 @@ FLAG2 = 0
 IF(FLAG.EQ.1) FLAG1 = 1
 IF(FLAG.EQ.0) FLAG2 = 1
 IF(FLAG.EQ.1.AND.COV.EQ.1) FLAG1 = THETA(3)  ;  COV = covariate (0/1)
-IF(FLAG.EQ.1.AND.COV.EQ.2) FLAG2 = THETA(3) 
+IF(FLAG.EQ.1.AND.COV.EQ.2) FLAG2 = THETA(3)
 CL = THETA(1)*EXP(ETA(1) + FLAG1*ETA(3) + FLAG2*ETA(4))
 V = THETA(2)*EXP(ETA(2) + FLAG2*ETA(5) + FLAG2*ETA(6))
 
@@ -1020,7 +1020,7 @@ $THETA
 (0, 100) ; V
 (0, 2)   ; Factor scaling IOV magnitude between groups
 
-$OMEGA 
+$OMEGA
 ...
 \end{lstlisting}
 
@@ -1057,15 +1057,15 @@ IOV1=ETA(4)*OCC1+ETA(5)*(1-OCC1)
 IOV3=ETA(8)*OCC1+ETA(9)*(1-OCC1)
 IF(TPHS.EQ.0) IOV1=ETA(6)
 IF(TPHS.EQ.0) IOV3=ETA(7)
-;Placebo 
+;Placebo
 
-PLC  = (THETA(2)+ETA(2)+(THETA(3)+ETA(3)+IOV3)*TTT)*TPHS 
+PLC  = (THETA(2)+ETA(2)+(THETA(3)+ETA(3)+IOV3)*TTT)*TPHS
 
 ;Dose-effect relationship
-DRUG= THETA(6)*TTT*TPHS*AZD 
+DRUG= THETA(6)*TTT*TPHS*AZD
 
-;Morning effect 
-MORN= 0 
+;Morning effect
+MORN= 0
 IF(CLC.LT.0.5) MORN = THETA(4)
 
 ;Markov effect
@@ -1087,12 +1087,12 @@ IF(PDV.EQ.1)   MARK = THETA(5)
   PGE5   =EXP(LGE5)/(1+EXP(LGE5))
 
 ;Probabilities for Y=1, Y=2, Y=3, Y=4, Y=5
- P0   =(1-PGE1) 
+ P0   =(1-PGE1)
  P1   =(PGE1-PGE2)
  P2   =(PGE2-PGE3)
  P3   =(PGE3-PGE4)
  P4   =(PGE4-PGE5)
- P5   = PGE5   
+ P5   = PGE5
  PTOT=P0+P1+P2+P3+P4+P5
 ;Select appropriate P(Y=m)
 DEL=1D-10
@@ -1104,7 +1104,7 @@ DEL=1D-10
  IF(DV.EQ.5) Y=P5+DEL
 PDV=DV
 
-"LAST                     
+"LAST
 " IF (G(10,1).EQ.0D0) G(10,1)=1D-8
 
 ...
@@ -1193,15 +1193,15 @@ OCC1=0
 IF(TTT.LT.14) OCC1=1
 IOV3=ETA(15)*OCC1+ETA(16)*(1-OCC1)
 IF(TPHS.EQ.0) IOV3=ETA(17)
-;Placebo 
+;Placebo
 
-PLC  = (THETA(2)+ETA(13)+(THETA(3)+ETA(14)+IOV3)*TTT)*TPHS 
+PLC  = (THETA(2)+ETA(13)+(THETA(3)+ETA(14)+IOV3)*TTT)*TPHS
 
 ;Dose-effect relationship
-DRUG= THETA(6)*TTT*TPHS*AZD 
+DRUG= THETA(6)*TTT*TPHS*AZD
 
-;Morning effect 
-MORN= 0 
+;Morning effect
+MORN= 0
 IF(CLC.LT.0.5) MORN = THETA(4)
 
 ;Markov effect
@@ -1223,13 +1223,13 @@ IF(PDV.EQ.1)   MARK = THETA(5)
   PGE5   =EXP(LGE5)/(1+EXP(LGE5))
 
 ;Probabilities for Y=1, Y=2, Y=3, Y=4, Y=5
- P0   =(1-PGE1) 
+ P0   =(1-PGE1)
  P1   =(PGE1-PGE2)
  P2   =(PGE2-PGE3)
  P3   =(PGE3-PGE4)
  P4   =(PGE4-PGE5)
- P5   = PGE5   
- 
+ P5   = PGE5
+
 ;Select appropriate P(Y=m)
  IF(DV.EQ.0) Y=P0
  IF(DV.EQ.1) Y=P1
@@ -1289,15 +1289,15 @@ specific functionality to facilitate this.
 ; Example sde9 from NM7.2
 $SUBROUTINE ADVAN6 TOL=10 DP OTHER=sde.f90
 
-$MODEL 
+$MODEL
        COMP = (CENTRAL);
        COMP = (DFDX1)
        COMP = (DPDT11)
 
 $PK
-  IF(NEWIND.NE.2) OT = 0  
+  IF(NEWIND.NE.2) OT = 0
   MU_1  = THETA(1)
-  CL    = EXP(MU_1+ETA(1)) 
+  CL    = EXP(MU_1+ETA(1))
   MU_2  = THETA(2)
   VD    = EXP(MU_2+ETA(2))
   SGW1 = THETA(4)
@@ -1312,8 +1312,8 @@ DADT(2)=A(1)/VD
 " SGW(1)=SGW1
 "LAST
 "      CALL SDE_DER(DADT,A,DA,IR,SGW,1.0d+00,1.0d+00)
- 
-$ERROR (OBS ONLY)  
+
+$ERROR (OBS ONLY)
      IPRED = A(1)/VD
      IRES  = DV - IPRED
      W     = THETA(3)
@@ -1329,6 +1329,5 @@ $ERROR (OBS ONLY)
 \item Tornoe et al, Pharm Res, 2005
 \item NONMEM User Guide for version 7.2, 2011
 \end{itemize}
- 
+
 \end{document}
- 
